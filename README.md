@@ -72,6 +72,14 @@ you.
   `notebooklm-mcp-cli` before it works again. This is an inconvenience,
   not a security issue: your credentials are never exposed to this
   plugin, only a browser session cookie cached locally by the MCP server.
+- **Whether NotebookLM's own completion notification fires for
+  MCP-triggered generation is unconfirmed.** Manually starting a podcast
+  in the NotebookLM web UI does notify you when it's ready. Generation
+  triggered through this plugin's MCP server goes through an
+  undocumented internal API, and it's not yet verified whether that
+  triggers the same notification. Until confirmed, don't rely on it —
+  check the notebook directly, or enable `wait_for_completion` if you
+  want Claude to confirm completion in-session instead.
 - **Source-scoping is not a documented guarantee.** Generating a podcast
   scoped to only the newly-added source (so unrelated past topics in the
   same notebook don't get blended together) depends on an
