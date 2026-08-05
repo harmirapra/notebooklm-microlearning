@@ -1,6 +1,6 @@
 # NotebookLM Microlearning
 
-A Claude Code / Codex plugin that turns any topic into a NotebookLM audio
+A Claude Code plugin that turns any topic into a NotebookLM audio
 or slide podcast for microlearning — a structured source document plus,
 when connected, automatic creation in your own NotebookLM notebook.
 
@@ -29,19 +29,22 @@ when connected, automatic creation in your own NotebookLM notebook.
 ## Install
 
 ```bash
-# Claude Code — register this repo as a marketplace, then install from it
 claude plugin marketplace add harmirapra/notebooklm-microlearning
 claude plugin install notebooklm-microlearning
-
-# Codex — same repo, read via .codex-plugin/plugin.json
-codex plugin marketplace add harmirapra/notebooklm-microlearning
-codex plugin install notebooklm-microlearning
 ```
 
-On first enable, you'll be prompted for four settings (default language,
-explanation style, target notebook name, and how technical explanations
-should be — see `.claude-plugin/plugin.json` under `userConfig` for exact
-wording). Change them any time via `/plugin configure`.
+> **What "marketplace" means here:** nothing is submitted to, listed in,
+> or approved by any public catalog. Claude Code has no central plugin
+> registry. `marketplace add` simply tells your Claude Code to read
+> plugins from this GitHub repo — the repo *is* the marketplace, by
+> virtue of containing `.claude-plugin/marketplace.json`. The first
+> command registers the source; the second installs the plugin from it.
+
+On first enable, you'll be prompted for five settings (default language,
+explanation style, target notebook name, how technical explanations
+should be, and whether to wait for generation to finish — see
+`.claude-plugin/plugin.json` under `userConfig` for exact wording).
+Change them any time via `/plugin configure`.
 
 ## MCP setup (required for automatic notebook creation)
 
@@ -56,11 +59,11 @@ run through `uvx` — no separate server install). You still need:
    ```
 2. **Sign in once** (opens a real browser window — you log in to your own
    Google account there; no password is ever shared with this plugin or
-   with Claude/Codex):
+   with Claude):
    ```bash
    uvx --from notebooklm-mcp-cli nlm login
    ```
-3. **Restart Claude Code / Codex** (or run `/mcp`) so it picks up the
+3. **Restart Claude Code** (or run `/mcp`) so it picks up the
    connection.
 
 Without this, the skill still works — it just returns a document and a
@@ -92,20 +95,16 @@ you.
   can't confirm the behavior — it will not silently generate from every
   source in your notebook at once.
 
-**Note:** the Claude Code install commands above were verified live on
-2026-08-05. The Codex commands are the analogous syntax based on Codex's
-own plugin conventions but were not independently verified today —
-please open an issue if the exact syntax differs.
+**Note:** the install commands above were verified against Claude Code's
+own CLI on 2026-08-06.
 
-## Codex support
+## Editor support
 
-Codex reads the same `skills/` folder via `.codex-plugin/plugin.json`
-(identical content to `.claude-plugin/plugin.json`). One difference:
-`notebooklm-mcp-cli` has a one-command setup helper for several tools
-(`nlm setup add claude-code`, `cursor`, `gemini`, `github-copilot`,
-`cline`, `windsurf`, `claude-desktop`) but not yet for Codex — this
-plugin's bundled `.mcp.json` handles the wiring instead, so no manual
-Codex-specific MCP config step is needed beyond `uv`/`nlm login` above.
+**Claude Code only.** Codex is not supported. This plugin's five settings
+rely on the `userConfig` manifest field, which Claude Code implements but
+Codex's plugin format does not — the skill would have nothing to fill its
+configuration placeholders with. If that changes, Codex support can come
+back.
 
 ## License
 
