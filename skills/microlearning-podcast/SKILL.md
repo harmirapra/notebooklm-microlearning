@@ -34,6 +34,7 @@ user can change these any time via `/plugin configure`):
 - **Explanation style:** `${user_config.explanation_style}`
 - **Target notebook:** `${user_config.notebook_name}`
 - **Audience calibration:** `${user_config.expertise_level}`
+- **Wait for completion:** `${user_config.wait_for_completion}`
 
 If a file at `2_Context/identity/about-me.md` exists relative to the
 current working directory (i.e. the user happens to also have a PACT
@@ -77,6 +78,13 @@ and not an error.
    - Ask (or infer from context) whether the user wants an audio podcast
      or a slide deck, then trigger generation scoped to just the new
      source.
+   - **If `${user_config.wait_for_completion}` is true:** poll generation
+     status until it completes (or fails) and report the result before
+     finishing.
+   - **If false (the default):** do not poll or wait. Tell the user
+     generation has started, give them the notebook link, and stop —
+     they'll find the finished artifact in NotebookLM whenever it's
+     ready, no need to keep the session open for it.
 6. **Return everything together** — the source document, the notebook
    link (if step 5 ran), and a clear statement of which parts happened
    automatically vs. need a manual step.

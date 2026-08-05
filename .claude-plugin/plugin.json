@@ -38,6 +38,13 @@
       "description": "Your background, so explanations are pitched correctly: 'no technical background', 'some technical background', or 'developer'.",
       "default": "some technical background",
       "required": true
+    },
+    "wait_for_completion": {
+      "type": "boolean",
+      "title": "Wait for podcast generation to finish",
+      "description": "If enabled, Claude monitors generation until it's done and reports back. If disabled (default), Claude starts generation and returns immediately — check the notebook link when you're ready, no need to keep the session open.",
+      "default": false,
+      "required": true
     }
   }
 }
