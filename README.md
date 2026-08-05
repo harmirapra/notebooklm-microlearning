@@ -25,11 +25,13 @@ when connected, automatic creation in your own NotebookLM notebook.
 ## Install
 
 ```bash
-# Claude Code
-claude plugin add https://github.com/harmirapra/notebooklm-microlearning
+# Claude Code — register this repo as a marketplace, then install from it
+claude plugin marketplace add harmirapra/notebooklm-microlearning
+claude plugin install notebooklm-microlearning
 
-# Codex
-codex plugin add https://github.com/harmirapra/notebooklm-microlearning
+# Codex — same repo, read via .codex-plugin/plugin.json
+codex plugin marketplace add harmirapra/notebooklm-microlearning
+codex plugin install notebooklm-microlearning
 ```
 
 On first enable, you'll be prompted for four settings (default language,
@@ -77,6 +79,11 @@ you.
   live tool schema before relying on it and tells you explicitly if it
   can't confirm the behavior — it will not silently generate from every
   source in your notebook at once.
+
+**Note:** the Claude Code install commands above were verified live on
+2026-08-05. The Codex commands are the analogous syntax based on Codex's
+own plugin conventions but were not independently verified today —
+please open an issue if the exact syntax differs.
 
 ## Codex support
 

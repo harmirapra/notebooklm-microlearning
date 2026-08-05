@@ -1,0 +1,20 @@
+{
+  "name": "notebooklm-microlearning-marketplace",
+  "description": "Marketplace for the NotebookLM Microlearning plugin",
+  "owner": {
+    "name": "Michal Hartman",
+    "url": "https://github.com/harmirapra"
+  },
+  "plugins": [
+    {
+      "name": "notebooklm-microlearning",
+      "description": "Turns a topic into a NotebookLM audio or slide podcast for microlearning.",
+      "version": "0.1.0",
+      "source": "./",
+      "author": {
+        "name": "Michal Hartman",
+        "url": "https://github.com/harmirapra"
+      }
+    }
+  ]
+}
