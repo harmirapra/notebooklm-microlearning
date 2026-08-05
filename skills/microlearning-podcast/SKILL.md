@@ -6,9 +6,12 @@ description: >
   actual notebook source and generated artifact. Use when the user says
   "turn this into a podcast", "make me a NotebookLM podcast on X",
   "microlearning on X", "ukotvi mi X" (Czech), or names a topic they want
-  to reinforce/learn via audio or slides on the go. Do NOT use this as
-  preparation before a first lesson on a topic — it's for reinforcing
-  something already partly known, not introducing it.
+  to reinforce/learn via audio or slides on the go. Also use for a
+  follow-up on an already-generated topic, e.g. "make that a video
+  instead", "also generate the audio version" — reuses the existing
+  source rather than rewriting it. Do NOT use this as preparation before
+  a first lesson on a topic — it's for reinforcing something already
+  partly known, not introducing it.
 ---
 
 # Microlearning Podcast
@@ -89,6 +92,19 @@ and not an error.
    link (if step 5 ran), and a clear statement of which parts happened
    automatically vs. need a manual step.
 
+## Generating an additional format from an existing source
+
+If the user asks for a **different artifact type** on a topic already
+added as a source — "make that a video instead", "also give me the audio
+version", "wrong format, I wanted a video overview" — **do not rewrite or
+re-add the source document.** Reuse the existing `source_id` (from the
+same conversation, or by re-checking `notebook_get`/`source_list` if
+needed) and call `studio_create` again with the new `artifact_type`,
+scoped to that same source. This is faster, avoids duplicate sources
+piling up in the notebook, and is exactly what `source_ids` scoping is
+for beyond keeping topics separate — it also lets one topic have several
+formats without re-authoring anything.
+
 ## MCP setup
 
 This skill needs the `gemini-notebook-mcp` MCP server (bundled via
@@ -130,6 +146,10 @@ What actually happens: `git add` marks the file for the next snapshot;
 Plus, if MCP is connected: the source added to the notebook named in
 `notebook_name`, and (once format is confirmed) a generation triggered
 scoped to that one source.
+
+**Follow-up, same session:** "actually make that a video, not slides" →
+skill reuses the same source_id, calls `studio_create` with
+`artifact_type=video` — no re-writing, no duplicate source.
 
 ## Acknowledgments
 

@@ -21,6 +21,10 @@ when connected, automatic creation in your own NotebookLM notebook.
    podcast, scoped to just that new source.
 4. If the MCP server isn't set up yet, you still get the source document
    and a ready-to-paste NotebookLM prompt — nothing is blocked on setup.
+5. **Want it in a different format afterwards?** Just ask — "make that a
+   video instead", "also give me the audio version". The skill reuses the
+   existing source rather than rewriting it, so one topic can have
+   several formats without re-authoring anything.
 
 ## Install
 
