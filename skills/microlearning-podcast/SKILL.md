@@ -33,7 +33,11 @@ or slide podcast from it — no manual copy-pasting.
 Read from plugin `userConfig` (set when this plugin was enabled — the
 user can change these any time via `/plugin configure`):
 
-- **Language:** `${user_config.default_language}`
+- **Language:** `${user_config.default_language}` — note this is a language
+  *name* (e.g. "Czech"). The MCP server's `studio_create` tool takes a
+  **BCP-47 code** (`cs`, `en`, `de`), so map it before passing it through.
+  See the warning in workflow step 5 — getting this wrong fails in a way
+  that points at the wrong cause.
 - **Explanation style:** `${user_config.explanation_style}`
 - **Target notebook:** `${user_config.notebook_name}`
 - **Audience calibration:** `${user_config.expertise_level}`
@@ -81,13 +85,40 @@ and not an error.
    - Ask (or infer from context) whether the user wants an audio podcast
      or a slide deck, then trigger generation scoped to just the new
      source.
+   - **Pass `language` as a BCP-47 code, never a language name.**
+     `language: "Czech"` is rejected; `language: "cs"` works. This bites
+     because `${user_config.default_language}` holds a *name* — map it
+     (Czech → `cs`, English → `en`, German → `de`, …) before the call.
+     `studio_status(action="list_types")` is the authoritative list of
+     every artifact type's options if you need to check another one.
+   - **A successful `studio_create` response does not mean the artifact
+     will exist.** It returns `status: success` and "generation started"
+     even for arguments NotebookLM will refuse. Always confirm with
+     `studio_status` afterwards. A failure within roughly the first ten
+     seconds is almost always a bad argument — despite the error text,
+     which reads:
+
+     > `generation_failed: NotebookLM rejected or aborted this artifact
+     > (no media produced). Common causes: expired auth,
+     > capacity/rate-limit, or an unsupported prompt.
+     > Re-check auth (nlm login) and retry.`
+
+     That message points at auth and capacity. Check the arguments first —
+     re-running `nlm login` on a session that is working fine wastes the
+     user's time. (Verified 2026-08-06: a `language: "Czech"` call failed
+     exactly this way while the same session was successfully adding
+     sources.)
    - **If `${user_config.wait_for_completion}` is true:** poll generation
      status until it completes (or fails) and report the result before
      finishing.
-   - **If false (the default):** do not poll or wait. Tell the user
-     generation has started, give them the notebook link, and stop —
-     they'll find the finished artifact in NotebookLM whenever it's
-     ready, no need to keep the session open for it.
+   - **If false (the default):** make **one** `studio_status` check about
+     a minute after starting — just long enough to catch the fast
+     argument failures above — then stop. Do not poll to completion.
+     Tell the user generation has started and give them the notebook
+     link; they'll find the finished artifact in NotebookLM whenever it's
+     ready, no need to keep the session open for it. The point of the
+     single check is to avoid sending the user away happy to wait for an
+     artifact that already failed.
 6. **Return everything together** — the source document, the notebook
    link (if step 5 ran), and a clear statement of which parts happened
    automatically vs. need a manual step.

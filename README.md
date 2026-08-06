@@ -70,6 +70,37 @@ Without this, the skill still works — it just returns a document and a
 prompt for you to paste into NotebookLM manually instead of doing it for
 you.
 
+## Ideas beyond "explain topic X to me"
+
+The obvious use is learning something you're already half-familiar with.
+These are less obvious, and all of them are just *things you ask for* —
+none of it is special built-in automation.
+
+- **Explain your own project to other people.** Point it at a repo's
+  README and architecture notes and ask for a slide deck. You get an
+  onboarding walkthrough for colleagues without writing slides.
+  This README's own plugin was documented exactly this way.
+- **Turn a release into a "what changed" episode.** After cutting a
+  version, ask for a podcast covering the diff or changelog. Reviewers who
+  won't read a diff will listen to five minutes on the way home. Works
+  well as a step in a release checklist: tag → changelog → podcast.
+- **Re-record when the source goes stale.** Generated artifacts are
+  snapshots — nothing updates them when the underlying thing changes.
+  This plugin's own first podcast claimed Codex support one day after
+  Codex support was removed. The fix is to replace the source, regenerate,
+  and **delete the outdated artifacts** so nobody learns the wrong version
+  from a file that still looks current.
+- **Give one topic several formats.** Ask for a video after the slide
+  deck; the skill reuses the same source instead of re-authoring it.
+
+**One important caveat if you do this with real content:** the skill's
+default behavior is to *write* a source document about a topic. For
+release notes, or anything where accuracy against a specific artifact
+matters, give it the actual material — the changelog, the diff, the
+commit messages — and say to work from that. Otherwise it writes from
+general knowledge about your topic, which is exactly what you don't want
+for a factual "here's what changed" summary.
+
 ## Known limitations
 
 - **Unofficial integration.** Google does not publish a public NotebookLM
@@ -79,14 +110,17 @@ you.
   `notebooklm-mcp-cli` before it works again. This is an inconvenience,
   not a security issue: your credentials are never exposed to this
   plugin, only a browser session cookie cached locally by the MCP server.
-- **Whether NotebookLM's own completion notification fires for
-  MCP-triggered generation is unconfirmed.** Manually starting a podcast
-  in the NotebookLM web UI does notify you when it's ready. Generation
-  triggered through this plugin's MCP server goes through an
-  undocumented internal API, and it's not yet verified whether that
-  triggers the same notification. Until confirmed, don't rely on it —
-  check the notebook directly, or enable `wait_for_completion` if you
-  want Claude to confirm completion in-session instead.
+- ~~Whether NotebookLM's own completion notification fires for
+  MCP-triggered generation is unconfirmed.~~ **Confirmed working
+  (2026-08-06).** Generation started through this plugin's MCP server
+  does trigger NotebookLM's normal completion notification — a push
+  notification on the NotebookLM mobile app, same as when you start a
+  podcast by hand in the web UI. So `wait_for_completion` is genuinely
+  optional: you can start a generation, close the session, and let your
+  phone tell you when it's done. Caveat: this is one confirmed
+  observation on one account, and it rides on the same undocumented
+  internal API as everything else here — if notifications ever stop
+  arriving, that is a plausible thing to have broken.
 - **Source-scoping is not a documented guarantee.** Generating a podcast
   scoped to only the newly-added source (so unrelated past topics in the
   same notebook don't get blended together) depends on an
